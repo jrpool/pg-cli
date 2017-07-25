@@ -50,7 +50,7 @@ Features exceeding the specified requirements include the following:
 
 ## Installation and Setup
 
-0. These instructions presuppose that [npm][npm] is installed.
+0. These instructions presuppose that (1) [npm][npm] and [PostgreSQL][pg] are installed, (2) there is a PostgreSQL database cluster, (3) PostgreSQL is running, and (4) when you connect to the cluster you are a PostgreSQL superuser.
 
 1. Your copy of this project will be located in its own directory, inside some other directory that you may choose or create. For example, to create that parent directory inside your own home directory’s `Documents` subdirectory and call it `projects`, you can execute:
 

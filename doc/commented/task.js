@@ -1,5 +1,5 @@
 /**
-  Manager of a list stored in a JSON-format file. Performs additions to it,
+  Manager of a list stored in a PostgreSQL database. Performs additions to it,
   deletions from it, and disclosures and resets of it in response to
   command-line arguments. Called by Node.js.
 */
@@ -22,14 +22,12 @@ const reset = module.require('./src/commands/reset').reset;
 const messages = module.require('./src/messages').messages;
 
 // Import the validate objects from the validate module.
-const validate = module.require('./src/validate');
-const isNonblankString = validate.isNonblankString;
-const areIntRangeStrings = validate.areIntRangeStrings;
+const {isNonblankString, areIntRangeStrings} = require('./src/validate');
+// const validate = module.require('./src/validate');
+// const isNonblankString = validate.isNonblankString;
+// const areIntRangeStrings = validate.areIntRangeStrings;
 
 //////// CONSTANTS ////////
-
-// Identify the path of the JSON file containing the list.
-const filePath = process.cwd() + '/data/' + 'tasks' + '.json';
 
 // Identify the command-line arguments.
 const args = process.argv.slice(2);
@@ -63,7 +61,7 @@ if (args[0] !== undefined) {
 
   else if (args[0] === 'add' && isNonblankString(args[1])) {
     // Execute the addition function.
-    add(filePath, args[1], handleMessage, messages);
+    add(args[1], handleMessage, messages);
   }
 
   //// DONE ////
@@ -84,7 +82,7 @@ if (args[0] !== undefined) {
         currentValue => Number.parseInt(currentValue)
       );
       // Execute the removal function.
-      done(filePath, doneRange, handleMessage, messages);
+      done(doneRange, handleMessage, messages);
     }
     // Otherwise, i.e. if they are not both valid:
     else {
@@ -97,14 +95,14 @@ if (args[0] !== undefined) {
 
   else if (args[0] === 'list') {
     // Execute the listing function.
-    list(filePath, handleMessage, messages);
+    list(handleMessage, messages);
   }
 
   //// RESET ////
 
   else if (args[0] === 'reset') {
     // Execute the reset function.
-    reset(filePath, handleMessage, messages);
+    reset(handleMessage, messages);
   }
   // Otherwise, i.e. if the command was invalid:
   else {
