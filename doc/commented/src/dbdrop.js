@@ -5,11 +5,11 @@ const {Client} = require('pg');
 /// Destruction of tasks database.
 
 // Identify the statements to destroy the tasks database.
-fs.readFile('./dbdrop.sql', 'utf8', (err, data) => {
+fs.readFile('./sql/dbdrop.sql', 'utf8', (err, data) => {
   // If the identification failed:
   if (err) {
     // Report this.
-    console.log('Error (./dbdrop.sql): ' + err.message);
+    console.log('Error (./sql/dbdrop.sql): ' + err.message);
   }
   // Otherwise, i.e. if the identification succeeded:
   else {

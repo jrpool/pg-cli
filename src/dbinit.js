@@ -2,20 +2,21 @@ const fs = require('fs');
 
 const {Client} = require('pg');
 
-/// Creation and population of tasks database.
+/// Create and populate tasks database.
 
 fs.readFile('./dbinit.sql', 'utf8', (err, data) => {
   if (err) {
     console.log('Error (./dbinit.sql): ' + err.message);
   }
   else {
-    const client0 = new Client({database: 'postgres'});
+    const client0 = new Client({database: 'postgresbad'});
     client0.connect().catch(
       error => {
         console.log(
           'Connection to postgres database failed with message:\n'
           + error.message
         );
+        throw new Error('Could not connect to postgres database');
       }
     ).then(
       () => {
