@@ -1,10 +1,5 @@
 /// Process a command to list the items in a list.
 
-// Import readJSON from the fileIO module.
-const fileIO = module.require('../fileIO');
-const readJSON = fileIO.readJSON;
-const parseJSON = fileIO.parseJSON;
-
 // Import the “cli-table2” module.
 const Table = require('cli-table2');
 
@@ -19,7 +14,7 @@ const Table = require('cli-table2');
   1. handleMessage is a function.
   2. messages is an object.
 */
-exports.list = (filePath, handleMessage, messages) => {
+exports.list = (handleMessage, messages) => {
   // Declare and define a callback function for readFile.
   const readCallback = (err, data) => {
     // Identify an object represented by the file that was read.

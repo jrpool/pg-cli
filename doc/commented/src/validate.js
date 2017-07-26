@@ -1,24 +1,29 @@
 /// Functions testing satisfaction of commonly required argument properties.
 
-/// NONBLANK STRING
+/** POSITIVE INTEGER
 
-exports.isNonblankString = string =>
-  string !== undefined && typeof string === 'string' && string.length;
-
-/** BOUNDED INTEGER RANGE
-
-  Function that returns whether the specified arguments are a valid
-  specification of a range of integers, either unbounded or inclusively
-  bounded on each end.
+  Function that returns whether the specified argument is a valid
+  specification of a positive integers.
 */
-exports.areIntRangeStrings = (string0, string1, min, max) => {
-  if (string0 === undefined || string1 === undefined) {
+exports.isPositiveInt = string => {
+  return string !== undefined && Number.isInteger(Number.parseInt(string));
+};
+
+/** BOUNDED POSITIVE INTEGER RANGE
+
+  Function that returns whether the specified argument is a valid
+  specification of a range of positive integers, unbounded, inclusively
+  lower-bounded, or inclusively bilaterally bounded.
+*/
+exports.isPositiveIntRange = (string, min, max) => {
+  if (string === undefined) {
     return false;
   }
-  const int0 = Number.parseInt(string0);
-  const int1 = Number.parseInt(string1);
-  return Number.isInteger(int0) && Number.isInteger(int1)
-    && (min === undefined || int0 >= min)
-    && (max === undefined || int1 <= max)
-    && int1 >= int0;
+  const intStrings = string.split('-', 2);
+  return intStrings.length === 2
+    && isPositiveInt(intStrings[0])
+    && isPositiveInt(intStrings[1])
+    && intStrings[1] >= intStrings[0]
+    && (min === undefined || intStrings[0] >= min)
+    && (max === undefined || intStrings[1] <= max);
 };

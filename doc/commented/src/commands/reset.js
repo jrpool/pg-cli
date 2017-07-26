@@ -1,10 +1,5 @@
 /// Process a command to reset the next ID to 1.
 
-// Import the fileIO objects from the readFile module.
-const fileIO = module.require('../fileIO');
-const readJSON = fileIO.readJSON;
-const writeFile = fileIO.writeFile;
-
 /**
   Declare, define, and export a function that resets the next ID in the list
     to 1.

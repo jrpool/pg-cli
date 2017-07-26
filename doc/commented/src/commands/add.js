@@ -1,11 +1,5 @@
 /// Process a command to add an item to a list.
 
-// Import the fileIO objects from the fileIO module.
-const fileIO = module.require('../fileIO');
-const readJSON = fileIO.readJSON;
-const writeFile = fileIO.writeFile;
-const parseJSON = fileIO.parseJSON;
-
 /**
   Declare, define, and export a function that adds a specified item to the
     list in a specified JSON file.
