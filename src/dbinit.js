@@ -2,97 +2,74 @@ const fs = require('fs');
 
 const {Client} = require('pg');
 
-/// Create and populate tasks database.
+/// Create manager role and create and populate tasks database.
 
 fs.readFile('./dbinit.sql', 'utf8', (err, data) => {
   if (err) {
-    console.log('Error (./dbinit.sql): ' + err.message);
+    console.log('Error (./sql/dbinit.sql): ' + err.message);
   }
   else {
-    const client0 = new Client({database: 'postgresbad'});
-    client0.connect().catch(
-      error => {
+    const client0 = new Client({database: 'postgres'});
+    client0.connect().then(
+      result => {
         console.log(
-          'Connection to postgres database failed with message:\n'
-          + error.message
+          'Connected to postgres database with message:\n  ' + result
         );
-        throw new Error('Could not connect to postgres database');
-      }
-    ).then(
-      () => {
-        console.log('Connected to postgres database');
         client0.query(data);
-      }
-    ).catch(
-      error => {
-        console.log(
-          'Tasks database creation failed with message:\n' + error.message
-        );
       }
     ).then(
       result => {
-        console.log('Tasks database created with message:\n' + result);
+        console.log(
+          'Manager role and tasks database created with message:\n  ' + result
+        );
         client0.end();
       }
-    ).catch(
-      error => {
-        console.log(
-          'Disconnection from postgres database failed with message:\n'
-          + error.message
-        );
-      }
     ).then(
-      () => {
-        console.log('Disconnected from postgres database');
-        fs.readFile('./schema.sql', 'utf8', (err, data) => {
+      result => {
+        console.log(
+          'Disconnected from postgres database with message:\n  ' + result
+        );
+        fs.readFile('./sql/schema.sql', 'utf8', (err, data) => {
           if (err) {
-            console.log('Error (./schema.sql): ' + err.message);
+            console.log('Error (./sql/schema.sql): ' + err.message);
           }
           else {
             const client1 = new Client({
               user: 'manager',
               database: 'tasks'
             });
-            client1.connect().catch(
-              error => {
+            client1.connect().then(
+              result => {
                 console.log(
-                  'Connection to tasks database failed with message'
-                  + error.message
+                  'Connected to tasks database with message:\n + result'
                 );
+                client1.query(data)
               }
             ).then(
-              () => {
-                console.log('Connected to tasks database');
-                client1.query(data).catch(
-                  error => {
-                    console.log(
-                      'Population of tasks database failed with message:\n'
-                      + error.message
-                    );
-                  }
-                ).then(
-                  result => {
-                    console.log(
-                      'Tasks database populated with message:\n' + result
-                    );
-                    client1.end();
-                  }
-                ).catch(
-                  error => {
-                    console.log(
-                      'Disconnection from tasks database failed with message:\n'
-                      + error.message
-                    );
-                  }
-                ).then(
-                  () => {
-                    console.log('Disconnected from tasks database');
-                  }
+              result => {
+                console.log(
+                  'Tasks database populated with message:\n' + result
                 );
+                client1.end();
+              }
+            ).then(
+              result => {
+                console.log(
+                  'Disconnected from tasks database with message:\n  '
+                  + result
+                );
+              }
+            ).catch(
+              error => {
+                console.log('Error (client1): ' + error.message);
               }
             );
           }
         });
+      }
+    ).catch(
+      error => {
+        console.log('Error (client0): ' + error.message);
       }
     );
   }

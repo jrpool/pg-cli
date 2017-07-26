@@ -4,9 +4,9 @@ const {Client} = require('pg');
 
 /// Destruction of tasks database.
 
-fs.readFile('./dbdrop.sql', 'utf8', (err, data) => {
+fs.readFile('./sql/dbdrop.sql', 'utf8', (err, data) => {
   if (err) {
-    console.log('Error (./dbdrop.sql): ' + err.message);
+    console.log('Error (./sql/dbdrop.sql): ' + err.message);
   }
   else {
     const client = new Client({database: 'postgres'});
