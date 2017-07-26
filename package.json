@@ -18,9 +18,9 @@
     "mocha": ">=3.4.2"
   },
   "scripts": {
-    "dbdrop": "node ./dbdrop",
-    "dbinit": "node ./dbinit",
-    "lint": "eslint task.js src/ src/commands/ test/ doc/commented doc/commented/src/ doc/commented/src/commands/ dev/; exit 0",
+    "dbdrop": "node ./src/dbdrop",
+    "dbinit": "node ./src/dbinit",
+    "lint": "eslint task.js src/ src/commands/ test/ doc/commented doc/commented/src/ doc/commented/dev/ dev/; exit 0",
     "test": "mocha --compilers js:babel-register test/*.js"
   },
   "bugs": {
