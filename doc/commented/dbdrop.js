@@ -30,7 +30,7 @@ fs.readFile('./dbdrop.sql', 'utf8', (err, data) => {
       () => {
         // Report this.
         console.log('Connected to postgres database');
-        // Execute the statements creating the tasks database.
+        // Execute the statements destroying the tasks database.
         client.query(data);
       }
     ).catch(
@@ -44,7 +44,10 @@ fs.readFile('./dbdrop.sql', 'utf8', (err, data) => {
       // If the destruction succeeded:
       result => {
         // Report this.
-        console.log('Tasks database destroyed with message:\n' + result);
+        console.log(
+          'Tasks database and manager role destroyed with messages:\n'
+          + result
+        );
         // Disconnect from the postgres database.
         client.end();
       }
