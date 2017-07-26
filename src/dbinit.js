@@ -4,31 +4,25 @@ const {Client} = require('pg');
 
 /// Create manager role and create and populate tasks database.
 
-fs.readFile('./dbinit.sql', 'utf8', (err, data) => {
+fs.readFile('./sql/dbinit.sql', 'utf8', (err, data) => {
   if (err) {
     console.log('Error (./sql/dbinit.sql): ' + err.message);
   }
   else {
     const client0 = new Client({database: 'postgres'});
     client0.connect().then(
-      result => {
-        console.log(
-          'Connected to postgres database with message:\n  ' + result
-        );
+      () => {
+        console.log('Connected to postgres database');
         client0.query(data);
       }
     ).then(
-      result => {
-        console.log(
-          'Manager role and tasks database created with message:\n  ' + result
-        );
+      () => {
+        console.log('Manager role and tasks database created');
         client0.end();
       }
     ).then(
-      result => {
-        console.log(
-          'Disconnected from postgres database with message:\n  ' + result
-        );
+      () => {
+        console.log('Disconnected from postgres database');
         fs.readFile('./sql/schema.sql', 'utf8', (err, data) => {
           if (err) {
             console.log('Error (./sql/schema.sql): ' + err.message);
@@ -39,25 +33,18 @@ fs.readFile('./dbinit.sql', 'utf8', (err, data) => {
               database: 'tasks'
             });
             client1.connect().then(
-              result => {
-                console.log(
-                  'Connected to tasks database with message:\n + result'
-                );
+              () => {
+                console.log('Connected to tasks database');
                 client1.query(data)
               }
             ).then(
-              result => {
-                console.log(
-                  'Tasks database populated with message:\n' + result
-                );
+              () => {
+                console.log('Tasks database populated');
                 client1.end();
               }
             ).then(
-              result => {
-                console.log(
-                  'Disconnected from tasks database with message:\n  '
-                  + result
-                );
+              () => {
+                console.log('Disconnected from tasks database');
               }
             ).catch(
               error => {
