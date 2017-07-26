@@ -14,7 +14,7 @@ fs.readFile('./dbdrop.sql', 'utf8', (err, data) => {
   // Otherwise, i.e. if the identification succeeded:
   else {
     // Create a client to connect to the postgres database.
-    const client = new Client({database: postgres});
+    const client = new Client({database: 'postgres'});
     // Make the connection.
     client.connect().catch(
       // If the connection failed:

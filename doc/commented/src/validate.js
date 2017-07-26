@@ -5,7 +5,7 @@
   Function that returns whether the specified argument is a valid
   specification of a positive integers.
 */
-exports.isPositiveInt = string => {
+const isPositiveInt = string => {
   return string !== undefined && Number.isInteger(Number.parseInt(string));
 };
 
@@ -15,7 +15,7 @@ exports.isPositiveInt = string => {
   specification of a range of positive integers, unbounded, inclusively
   lower-bounded, or inclusively bilaterally bounded.
 */
-exports.isPositiveIntRange = (string, min, max) => {
+const isPositiveIntRange = (string, min, max) => {
   if (string === undefined) {
     return false;
   }
@@ -27,3 +27,6 @@ exports.isPositiveIntRange = (string, min, max) => {
     && (min === undefined || intStrings[0] >= min)
     && (max === undefined || intStrings[1] <= max);
 };
+
+exports.isPositiveInt = isPositiveInt;
+exports.isPositiveIntRange = isPositiveIntRange;

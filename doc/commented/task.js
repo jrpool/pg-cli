@@ -4,7 +4,7 @@
   command-line arguments. Called by Node.js.
 */
 
-//////// IMPORTS ////////
+/// ///// IMPORTS ///// ///
 
 // Import Client from the pg module.
 const {Client} = require('pg');
@@ -13,12 +13,12 @@ const {Client} = require('pg');
 const Table = require('cli-table2');
 
 // Import the validate objects from the validate module.
-const {isNonblankString, areIntRangeStrings} = require('./src/validate');
+const {isPositiveInt, isPositiveIntRange} = require('./src/validate');
 
-//////// GENERAL FUNCTIONS ////////
+/// ///// GENERAL FUNCTIONS ///// ///
 
 /// Define a function that returns a database function invocation.
-const makeFnCall = args => {
+const mkFnCall = args => {
   // Identify the function arguments as a string, blank if none.
   const fnArgs = args.slice(1).join(', ');
   // Return the query.
@@ -45,8 +45,8 @@ const handleMessage = (messages, messageKey, symbol, replacement) => {
 const execute = (messages, handler, fnName, ...fnArgs) => {
   // Create a client to connect to the tasks database.
   const client = new Client({
-    user: manager,
-    database: tasks
+    user: 'manager',
+    database: 'tasks'
   });
   // Make the connection.
   client.connect().catch(
@@ -97,10 +97,10 @@ const execute = (messages, handler, fnName, ...fnArgs) => {
         }
       );
     }
-  )
+  );
 };
 
-//////// COMMAND-SPECIFIC HANDLERS ////////
+/// ///// COMMAND-SPECIFIC HANDLERS ///// ///
 
 /// Define a handler for the result of the help command.
 const helpHandler = messages => {
@@ -121,7 +121,7 @@ const doneHandler = (messages, result) => {
   // If any tasks were removed:
   if (rows.length) {
     // For each of them:
-    for (row of rows) {
+    for (const row of rows) {
       // Handle its values.
       handleMessage(
         messages, 'doneReport','«id+doneResult»',
@@ -147,10 +147,10 @@ const listHandler = (messages, result) => {
   // If any tasks exist:
   if (rows.length) {
     // For each of them:
-    for (row of rows) {
+    for (const row of rows) {
       // Add it to the table.
       table.push([row.identifier, row.what]);
-    };
+    }
   }
   // Identify a footer template for the table.
   const footer =
@@ -160,15 +160,15 @@ const listHandler = (messages, result) => {
   */
   const listMessages = {'table': [table.toString(), footer].join('\n')};
   // Handle the table and its footer template as a message.
-  handleMessage(tableWrapper, 'table', '«rows.length»', rows.length);
+  handleMessage(listMessages, 'table', '«rows.length»', rows.length);
 };
 
 /// Define a handler for the result of the reset command.
-const resetHandler = (messages, result) => {
-  handleMessage(messages, resetReport);
+const resetHandler = (messages) => {
+  handleMessage(messages, 'resetReport');
 };
 
-//////// EXECUTION ////////
+/// ///// EXECUTION ///// ///
 
 /// Identify the command-line arguments.
 const args = process.argv.slice(2);

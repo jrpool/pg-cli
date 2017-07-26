@@ -4,18 +4,18 @@
   command-line arguments. Called by Node.js.
 */
 
-//////// IMPORTS ////////
+/// ///// IMPORTS ///// ///
 
 const {Client} = require('pg');
 
 const Table = require('cli-table2');
 
-const {isNonblankString, areIntRangeStrings} = require('./src/validate');
+const {isPositiveInt, isPositiveIntRange} = require('./src/validate');
 
-//////// GENERAL FUNCTIONS ////////
+/// ///// GENERAL FUNCTIONS ///// ///
 
 /// Define a function that returns a database function invocation.
-const makeFnCall = args => {
+const mkFnCall = args => {
   const fnArgs = args.slice(1).join(', ');
   return 'select * from ' + args[0] + '(' + fnArgs + ')';
 };
@@ -35,8 +35,8 @@ const handleMessage = (messages, messageKey, symbol, replacement) => {
 */
 const execute = (messages, handler, fnName, ...fnArgs) => {
   const client = new Client({
-    user: manager,
-    database: tasks
+    user: 'manager',
+    database: 'tasks'
   });
   client.connect().catch(
     error => {
@@ -72,10 +72,10 @@ const execute = (messages, handler, fnName, ...fnArgs) => {
         }
       );
     }
-  )
+  );
 };
 
-//////// COMMAND-SPECIFIC HANDLERS ////////
+/// ///// COMMAND-SPECIFIC HANDLERS ///// ///
 
 /// Define a handler for the result of the help command.
 const helpHandler = messages => {
@@ -93,7 +93,7 @@ const addHandler = (messages, result) => {
 const doneHandler = (messages, result) => {
   const rows = result.rows;
   if (rows.length) {
-    for (row of rows) {
+    for (const row of rows) {
       handleMessage(
         messages, 'doneReport','«id+doneResult»',
         row.identifier + ' ' + row.what
@@ -112,22 +112,22 @@ const listHandler = (messages, result) => {
   });
   const rows = result.rows;
   if (rows.length) {
-    for (row of rows) {
+    for (const row of rows) {
       table.push([row.identifier, row.what]);
-    };
+    }
   }
   const footer =
     rows.length === 1 ? messages.listSumReport1 : messages.listSumReport2;
   const listMessages = {'table': [table.toString(), footer].join('\n')};
-  handleMessage(tableWrapper, 'table', '«rows.length»', rows.length);
+  handleMessage(listMessages, 'table', '«rows.length»', rows.length);
 };
 
 /// Define a handler for the result of the reset command.
-const resetHandler = (messages, result) => {
-  handleMessage(messages, resetReport);
+const resetHandler = (messages) => {
+  handleMessage(messages, 'resetReport');
 };
 
-//////// EXECUTION ////////
+/// ///// EXECUTION ///// ///
 
 /// Identify the command-line arguments.
 const args = process.argv.slice(2);

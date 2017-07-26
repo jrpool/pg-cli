@@ -9,7 +9,7 @@ fs.readFile('./dbdrop.sql', 'utf8', (err, data) => {
     console.log('Error (./dbdrop.sql): ' + err.message);
   }
   else {
-    const client = new Client({database: postgres});
+    const client = new Client({database: 'postgres'});
     client.connect().catch(
       error => {
         console.log(

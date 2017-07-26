@@ -9,7 +9,7 @@ fs.readFile('./dbinit.sql', 'utf8', (err, data) => {
     console.log('Error (./dbinit.sql): ' + err.message);
   }
   else {
-    const client0 = new Client({database: postgres});
+    const client0 = new Client({database: 'postgres'});
     client0.connect().catch(
       error => {
         console.log(
@@ -49,8 +49,8 @@ fs.readFile('./dbinit.sql', 'utf8', (err, data) => {
           }
           else {
             const client1 = new Client({
-              user: manager,
-              database: tasks
+              user: 'manager',
+              database: 'tasks'
             });
             client1.connect().catch(
               error => {
@@ -67,13 +67,13 @@ fs.readFile('./dbinit.sql', 'utf8', (err, data) => {
                     console.log(
                       'Population of tasks database failed with message:\n'
                       + error.message
-                    )
+                    );
                   }
                 ).then(
                   result => {
                     console.log(
                       'Tasks database populated with message:\n' + result
-                    )
+                    );
                     client1.end();
                   }
                 ).catch(
@@ -87,9 +87,9 @@ fs.readFile('./dbinit.sql', 'utf8', (err, data) => {
                   () => {
                     console.log('Disconnected from tasks database');
                   }
-                )
+                );
               }
-            )
+            );
           }
         });
       }

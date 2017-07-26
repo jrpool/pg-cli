@@ -14,7 +14,7 @@ fs.readFile('./dbinit.sql', 'utf8', (err, data) => {
   // Otherwise, i.e. if the identification succeeded:
   else {
     // Create a client to connect to the postgres database.
-    const client0 = new Client({database: postgres});
+    const client0 = new Client({database: 'postgres'});
     // Make the connection.
     client0.connect().catch(
       // If the connection failed:
@@ -74,8 +74,8 @@ fs.readFile('./dbinit.sql', 'utf8', (err, data) => {
           else {
             // Create a client to connect to the tasks database as its owner.
             const client1 = new Client({
-              user: manager,
-              database: tasks
+              user: 'manager',
+              database: 'tasks'
             });
             // Make the connection.
             client1.connect().catch(
@@ -99,7 +99,7 @@ fs.readFile('./dbinit.sql', 'utf8', (err, data) => {
                     console.log(
                       'Population of tasks database failed with message:\n'
                       + error.message
-                    )
+                    );
                   }
                 ).then(
                   // If the execution succeeded:
@@ -107,7 +107,7 @@ fs.readFile('./dbinit.sql', 'utf8', (err, data) => {
                     // Report this.
                     console.log(
                       'Tasks database populated with message:\n' + result
-                    )
+                    );
                     // Disconnect from the tasks database.
                     client1.end();
                   }
@@ -126,9 +126,9 @@ fs.readFile('./dbinit.sql', 'utf8', (err, data) => {
                     // Report this.
                     console.log('Disconnected from tasks database');
                   }
-                )
+                );
               }
-            )
+            );
           }
         });
       }
