@@ -13,16 +13,16 @@ create function add(what text, out identifier integer)
       returning id as identifier;
   $$;
 
-create function done(identifier integer, out what text)
-  returns text language sql as $$
-    delete from tasks where id = identifier
+create function done(soleid integer, out identifier integer, out what text)
+  returns setof record language sql as $$
+    delete from tasks where id = soleid
       returning id as identifier, description as what;
   $$;
 
 create function done
-  (startID integer, endID integer, out identifier integer, out what text)
+  (startid integer, endid integer, out identifier integer, out what text)
   returns setof record language sql as $$
-    delete from tasks where id >= startID and id <= endID
+    delete from tasks where id >= startid and id <= endid
       returning id as identifier, description as what;
   $$;
 
@@ -31,8 +31,8 @@ create function list(out identifier integer, out what text)
     select id as identifier, description as what from tasks order by id;
   $$;
 
-create function reset(out done boolean)
-  returns boolean language sql as $$
+create function reset(out newid integer)
+  returns integer language sql as $$
     truncate tasks;
-    select setval('tasks_id_seq', 0);
+    select cast(setval('tasks_id_seq', 0) as integer);
   $$;
