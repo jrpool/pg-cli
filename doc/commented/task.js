@@ -12,7 +12,7 @@ const {Client} = require('pg');
 // Import the “cli-table2” module.
 const Table = require('cli-table2');
 
-// Import the validate objects from the validate module.
+// Import the validation objects from the validate module.
 const {isPositiveInt, isPositiveIntRange} = require('./src/validate');
 
 /// ///// GENERAL FUNCTIONS ///// ///
@@ -20,7 +20,7 @@ const {isPositiveInt, isPositiveIntRange} = require('./src/validate');
 /// Define a function that returns a database function invocation.
 const mkFnCall = args => {
   // Identify the function arguments as a string, blank if none.
-  const fnArgs = args.slice(1).join(', ');
+  const fnArgs = args.slice(1).map(arg => "'" + arg + "'").join(', ');
   // Return the query.
   return 'select * from ' + args[0] + '(' + fnArgs + ')';
 };
@@ -95,7 +95,9 @@ const helpHandler = messages => {
 
 /// Define a handler for the result of the add command.
 const addHandler = (messages, result) => {
-  handleMessage(messages, 'addReport', '«addResult»', result);
+  handleMessage(
+    messages, 'addReport', '«addResult»', result.rows[0].identifier
+  );
 };
 
 /**
@@ -110,7 +112,7 @@ const doneHandler = (messages, result) => {
     for (const row of rows) {
       // Handle its values.
       handleMessage(
-        messages, 'doneReport','«id+doneResult»',
+        messages, 'doneReport', '«idAndDoneResult»',
         row.identifier + ' ' + row.what
       );
     }
@@ -182,9 +184,9 @@ if (args[0] !== undefined) {
       callFn(messages, doneHandler, 'done', args[1]);
     }
     // Otherwise, if the argument is a positive integer range:
-    if (isPositiveIntRange(args[1])) {
+    else if (isPositiveIntRange(args[1])) {
       // Perform the command.
-      callFn(messages, doneHandler, 'done', args[1].split('-'));
+      callFn(messages, doneHandler, 'done', ...args[1].split('-'));
     }
     // Otherwise, i.e. if the argument is invalid:
     else {

@@ -16,7 +16,7 @@ const {isPositiveInt, isPositiveIntRange} = require('./src/validate');
 
 /// Define a function that returns a database function invocation.
 const mkFnCall = args => {
-  const fnArgs = args.slice(1).join(', ');
+  const fnArgs = args.slice(1).map(arg => "'" + arg + "'").join(', ');
   return 'select * from ' + args[0] + '(' + fnArgs + ')';
 };
 
@@ -70,7 +70,9 @@ const helpHandler = messages => {
 
 /// Define a handler for the result of the add command.
 const addHandler = (messages, result) => {
-  handleMessage(messages, 'addReport', '«addResult»', result);
+  handleMessage(
+    messages, 'addReport', '«addResult»', result.rows[0].identifier
+  );
 };
 
 /**
@@ -81,7 +83,7 @@ const doneHandler = (messages, result) => {
   if (rows.length) {
     for (const row of rows) {
       handleMessage(
-        messages, 'doneReport','«id+doneResult»',
+        messages, 'doneReport', '«idAndDoneResult»',
         row.identifier + ' ' + row.what
       );
     }
@@ -131,8 +133,8 @@ if (args[0] !== undefined) {
     if (isPositiveInt(args[1])) {
       callFn(messages, doneHandler, 'done', args[1]);
     }
-    if (isPositiveIntRange(args[1])) {
-      callFn(messages, doneHandler, 'done', args[1].split('-'));
+    else if (isPositiveIntRange(args[1])) {
+      callFn(messages, doneHandler, 'done', ...args[1].split('-'));
     }
     else {
       handleMessage(messages, 'commandFail');

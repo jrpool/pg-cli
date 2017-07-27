@@ -20,12 +20,18 @@ const isPositiveIntRange = (string, min, max) => {
     return false;
   }
   const intStrings = string.split('-');
-  return intStrings.length === 2
-    && isPositiveInt(intStrings[0])
-    && isPositiveInt(intStrings[1])
-    && intStrings[1] >= intStrings[0]
-    && (min === undefined || intStrings[0] >= min)
-    && (max === undefined || intStrings[1] <= max);
+  if (intStrings.length !== 2) {
+    return false;
+  }
+  if (isPositiveInt(intStrings[0]) && isPositiveInt(intStrings[1])) {
+    const ints = intStrings.map(string => Number.parseInt(string));
+    return ints[1] >= ints[0]
+    && (min === undefined || ints[0] >= min)
+    && (max === undefined || ints[1] <= max);
+  }
+  else {
+    return false;
+  }
 };
 
 exports.isPositiveInt = isPositiveInt;

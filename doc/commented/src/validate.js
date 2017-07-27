@@ -19,21 +19,30 @@ const isPositiveInt = string => {
   lower-bounded, or inclusively bilaterally bounded.
 */
 const isPositiveIntRange = (string, min, max) => {
+  // Require the argument be defined.
   if (string === undefined) {
     return false;
   }
-  // Split the argument on its first “-”.
-  const intStrings = string.split('-', 2);
-  // 2 segments.
-  return intStrings.length === 2
-    // Both positive integers.
-    && isPositiveInt(intStrings[0])
-    && isPositiveInt(intStrings[1])
-    // Nondescending order.
-    && intStrings[1] >= intStrings[0]
-    // Within bounds, if specified.
-    && (min === undefined || intStrings[0] >= min)
-    && (max === undefined || intStrings[1] <= max);
+  // Split it on “-”.
+  const intStrings = string.split('-');
+  // Require there be segments.
+  if (intStrings.length !== 2) {
+    return false;
+  }
+  // If both specify positive integers:
+  if (isPositiveInt(intStrings[0]) && isPositiveInt(intStrings[1])) {
+    // Identify them.
+    const ints = intStrings.map(string => Number.parseInt(string));
+    // Require they be in nondescending order
+    return ints[1] >= ints[0]
+    // and, if specified, within bounds.
+    && (min === undefined || ints[0] >= min)
+    && (max === undefined || ints[1] <= max);
+  }
+  // Otherwise, i.e. if both do not specify positive integers, report failure.
+  else {
+    return false;
+  }
 };
 
 exports.isPositiveInt = isPositiveInt;

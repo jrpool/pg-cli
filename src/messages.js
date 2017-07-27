@@ -3,7 +3,7 @@ exports.messages = {
   'addReport': 'Created task «addResult».',
   'doneMissingFail':
     'The removal was unsuccessful because no such task exists.',
-  'doneReport': 'Completed the task \'«id+doneResult»\'.',
+  'doneReport': 'Completed the task \'«idAndDoneResult»\'.',
   'listCol0Head': 'ID',
   'listCol1Head': 'Description',
   'listSumReport1': '1 task.',
