@@ -42,60 +42,44 @@ const handleMessage = (messages, messageKey, symbol, replacement) => {
   Define a function that executes a function in the tasks database and
   handles its result.
 */
-const execute = (messages, handler, fnName, ...fnArgs) => {
+const callFn = (messages, handler, fnName, ...fnArgs) => {
   // Create a client to connect to the tasks database.
   const client = new Client({
-    user: 'manager',
+    user: 'taskmaster',
     database: 'tasks'
   });
-  // Make the connection.
-  client.connect().catch(
-    // If the connection failed:
-    error => {
-      // Report this.
-      console.log(
-        'Connection to tasks database failed with message:\n'
-        + error.message
-      );
-    }
-  ).then(
-    // If the connection succeeded:
+  // Make the connection. After it is complete:
+  client.connect().then(
+    // If it succeeded:
     () => {
       // Report this.
       console.log('Connected to tasks database');
-      // Execute the specified function.
-      client.query(mkFnCall([fnName, ...fnArgs]));
+      // Execute the specified function and return its result.
+      return client.query(mkFnCall([fnName, ...fnArgs]));
     }
-  ).catch(
-    // If the execution failed:
-    error => {
-      console.log(
-        'Execution of ' + fnName + ' failed with message:\n' + error.message
-      );
-    }
+  // After the execution is complete:
   ).then(
-    // If the execution succeeded:
+    // If it succeeded:
     result => {
       // Report this.
       console.log(fnName + ' executed');
+      // Handle the result of the function execution.
+      handler(messages, result);
       // Disconnect from the tasks database.
-      client.end().then(
-        // If the disconnection succeeded:
-        () => {
-          // Report this.
-          console.log('Application disconnected from tasks database');
-          // Handle the result of the function execution.
-          handler(messages, result);
-        },
-        // Otherwise, i.e. if the disconnection failed:
-        error => {
-          // Report this.
-          console.log(
-            'Disconnection from tasks database failed with message:\n'
-            + error.message
-          );
-        }
-      );
+      return client.end()
+    }
+  // After the disconnection is complete:
+  ).then(
+    // If it succeeded:
+    () => {
+      // Report this.
+      console.log('Disconnected from tasks database');
+    }
+  // If any error was thrown:
+  ).catch(
+    error => {
+      // Report it.
+      console.log('Error (' + fnName + '): ' + error.message);
     }
   );
 };
@@ -186,19 +170,19 @@ if (args[0] !== undefined) {
   // Otherwise, if it is “add” and the arguments are valid:
   else if (args[0] === 'add' && args.length === 2 && args[1].length) {
     // Perform the command.
-    execute(messages, addHandler, 'add', args[1]);
+    callFn(messages, addHandler, 'add', args[1]);
   }
   // Otherwise, if it is “done”, there is 1 more argument, and it is nonblank:
   else if (args[0] === 'done' && args.length === 2 && args[1].length) {
     // If the argument is a positive integer:
     if (isPositiveInt(args[1])) {
       // Perform the command.
-      execute(messages, doneHandler, 'done', args[1]);
+      callFn(messages, doneHandler, 'done', args[1]);
     }
     // Otherwise, if the argument is a positive integer range:
     if (isPositiveIntRange(args[1])) {
       // Perform the command.
-      execute(messages, doneHandler, 'done', args[1].split('-'));
+      callFn(messages, doneHandler, 'done', args[1].split('-'));
     }
     // Otherwise, i.e. if the argument is invalid:
     else {
@@ -209,16 +193,21 @@ if (args[0] !== undefined) {
   // Otherwise, if it is “list” and the arguments are valid:
   else if (args[0] === 'list' && args.length === 1) {
     // Perform the command.
-    execute(messages, listHandler, 'list');
+    callFn(messages, listHandler, 'list');
   }
   // Otherwise, if it is “reset” and the arguments are valid:
   else if (args[0] === 'reset' && args.length === 1) {
     // Perform the command.
-    execute(messages, resetHandler, 'reset');
+    callFn(messages, resetHandler, 'reset');
   }
   // Otherwise, i.e. if the command was invalid:
   else {
     // Report the error.
     handleMessage(messages, 'commandFail');
   }
+}
+// Otherwise, i.e. if no command is named:
+else {
+  // Report the error.
+  handleMessage(messages, 'commandFail');
 }
