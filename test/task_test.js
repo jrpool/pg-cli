@@ -4,12 +4,10 @@ const { execSync } = require('child_process');
 describe('task', function() {
 
   beforeEach('factory reset before each test', function() {
-    execSync('node task done 1-9');
     execSync('node task reset');
   });
 
   after('factory reset after final test', function() {
-    execSync('node task done 1-9');
     execSync('node task reset');
   });
 

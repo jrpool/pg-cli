@@ -52,8 +52,6 @@ const callFn = (messages, handler, fnName, ...fnArgs) => {
   client.connect().then(
     // If it succeeded:
     () => {
-      // Report this.
-      console.log('Connected to tasks database');
       // Execute the specified function and return its result.
       return client.query(mkFnCall([fnName, ...fnArgs]));
     }
@@ -61,22 +59,14 @@ const callFn = (messages, handler, fnName, ...fnArgs) => {
   ).then(
     // If it succeeded:
     result => {
-      // Report this.
-      console.log(fnName + ' executed');
       // Handle the result of the function execution.
       handler(messages, result);
       // Disconnect from the tasks database.
       return client.end();
     }
   // After the disconnection is complete:
-  ).then(
-    // If it succeeded:
-    () => {
-      // Report this.
-      console.log('Disconnected from tasks database');
-    }
-  // If any error was thrown:
   ).catch(
+    // If any error was thrown:
     error => {
       // Report it.
       console.log('Error (' + fnName + '): ' + error.message);
