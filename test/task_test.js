@@ -92,6 +92,8 @@ describe('mkFnCall', function() {
       .equal('select * from someFunction(\'thisArg\', \'17\', \'\')');
   });
 
+});
+
 describe('formulateMessage', function() {
 
   it('no replacement', function() {
