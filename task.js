@@ -33,44 +33,29 @@ const handleMessage = (messages, messageKey, symbol, replacement) => {
   Define a function that executes a function in the tasks database and
   handles its result.
 */
-const execute = (messages, handler, fnName, ...fnArgs) => {
+const callFn = (messages, handler, fnName, ...fnArgs) => {
   const client = new Client({
-    user: 'manager',
+    user: 'taskmaster',
     database: 'tasks'
   });
-  client.connect().catch(
-    error => {
-      console.log(
-        'Connection to tasks database failed with message:\n'
-        + error.message
-      );
-    }
-  ).then(
+  client.connect().then(
     () => {
       console.log('Connected to tasks database');
-      client.query(mkFnCall([fnName, ...fnArgs]));
-    }
-  ).catch(
-    error => {
-      console.log(
-        'Execution of ' + fnName + ' failed with message:\n' + error.message
-      );
+      return client.query(mkFnCall([fnName, ...fnArgs]));
     }
   ).then(
     result => {
       console.log(fnName + ' executed');
-      client.end().then(
-        () => {
-          console.log('Application disconnected from tasks database');
-          handler(messages, result);
-        },
-        error => {
-          console.log(
-            'Disconnection from tasks database failed with message:\n'
-            + error.message
-          );
-        }
-      );
+      handler(messages, result);
+      return client.end()
+    }
+  ).then(
+    () => {
+      console.log('Disconnected from tasks database');
+    }
+  ).catch(
+    error => {
+      console.log('Error (' + fnName + '): ' + error.message);
     }
   );
 };
@@ -139,26 +124,29 @@ if (args[0] !== undefined) {
     helpHandler(messages);
   }
   else if (args[0] === 'add' && args.length === 2 && args[1].length) {
-    execute(messages, addHandler, 'add', args[1]);
+    callFn(messages, addHandler, 'add', args[1]);
   }
   else if (args[0] === 'done' && args.length === 2 && args[1].length) {
     if (isPositiveInt(args[1])) {
-      execute(messages, doneHandler, 'done', args[1]);
+      callFn(messages, doneHandler, 'done', args[1]);
     }
     if (isPositiveIntRange(args[1])) {
-      execute(messages, doneHandler, 'done', args[1].split('-'));
+      callFn(messages, doneHandler, 'done', args[1].split('-'));
     }
     else {
       handleMessage(messages, 'commandFail');
     }
   }
   else if (args[0] === 'list' && args.length === 1) {
-    execute(messages, listHandler, 'list');
+    callFn(messages, listHandler, 'list');
   }
   else if (args[0] === 'reset' && args.length === 1) {
-    execute(messages, resetHandler, 'reset');
+    callFn(messages, resetHandler, 'reset');
   }
   else {
     handleMessage(messages, 'commandFail');
   }
+}
+else {
+  handleMessage(messages, 'commandFail');
 }
