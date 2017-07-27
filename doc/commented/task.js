@@ -17,7 +17,13 @@ const {isPositiveInt, isPositiveIntRange} = require('./src/validate');
 
 /// ///// GENERAL FUNCTIONS ///// ///
 
-/// Define a function that returns a database function invocation.
+/**
+  Define a function that returns a database function invocation.
+  Preconditions:
+    0. args has length 1 or more.
+    1. Each element of args is defined.
+    2. args[0] is a valid PostgreSQL identifier.
+*/
 const mkFnCall = args => {
   // Identify the function arguments as a string, blank if none.
   const fnArgs = args.slice(1).map(arg => "'" + arg + "'").join(', ');
@@ -25,8 +31,15 @@ const mkFnCall = args => {
   return 'select * from ' + args[0] + '(' + fnArgs + ')';
 };
 
-/// Define a function that acts on a message.
-const handleMessage = (messages, messageKey, symbol, replacement) => {
+/**
+  Define a function that formulates a message.
+  Preconditions:
+    0. messages is an object.
+    1. messageKey is one of the properties of messages.
+    2. symbol is a nonblank string without any RegExp metacharacters.
+    3. replacement is a string.
+*/
+const formulateMessage = (messages, messageKey, symbol, replacement) => {
   // Initialize the message.
   let message = messages[messageKey];
   // If there is a symbol to replace in it:
@@ -34,8 +47,14 @@ const handleMessage = (messages, messageKey, symbol, replacement) => {
     // Replace all instances of it.
     message = message.replace(RegExp(symbol, 'g'), replacement);
   }
-  // Output the message.
-  console.log(message);
+  // Return the message.
+  return message;
+};
+
+/// Define a function that acts on a message.
+const handleMessage = (messages, messageKey, symbol, replacement) => {
+  // Formulate and output the message.
+  console.log(formulateMessage(messages, messageKey, symbol, replacement);
 };
 
 /**
@@ -90,9 +109,7 @@ const addHandler = (messages, result) => {
   );
 };
 
-/**
-  Define a handler for the result of the done command.
-*/
+/// Define a handler for the result of the done command.
 const doneHandler = (messages, result) => {
   // Identify an array of the row objects in the result.
   const rows = result.rows;
@@ -205,3 +222,5 @@ else {
   // Report the error.
   handleMessage(messages, 'commandFail');
 }
+
+exports.mkFnCall = mkFnCall;

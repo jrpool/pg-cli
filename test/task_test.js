@@ -1,14 +1,141 @@
-import { expect } from 'chai';
-const { execSync } = require('child_process');
+import {expect} from 'chai';
+const {execSync} = require('child_process');
+const {isPositiveInt, isPositiveIntRange} = require('./src/validate');
+const {mkFnCall} = require('./task.js');
+
+describe('validate', function() {
+
+  context('positive integer', function() {
+
+    it('valid argument', function() {
+      expect(isPositiveInt('34').true);
+    });
+
+    it('negative argument', function() {
+      expect(isPositiveInt('-34').false);
+    });
+
+    it('noninteger argument', function() {
+      expect(isPositiveInt('34.5').false);
+    });
+
+    it('nonnumeric argument', function() {
+      expect(isPositiveInt('3+5').false);
+    });
+
+    it('zero argument', function() {
+      expect(isPositiveInt('0').false);
+    });
+
+  });
+
+  context('positive integer range', function() {
+
+    it('valid range with distinct bounds', function() {
+      expect(isPositiveInt('34-45').true);
+    });
+
+    it('valid but alphabetically descending range', function() {
+      expect(isPositiveInt('4-15').true);
+    });
+
+    it('valid range with identical bounds', function() {
+      expect(isPositiveInt('34-34').true);
+    });
+
+    it('partly nonpositive range', function() {
+      expect(isPositiveInt('0-3').false);
+    });
+
+    it('partly negative range', function() {
+      expect(isPositiveInt('-6-3').false);
+    });
+
+    it('noninteger bound', function() {
+      expect(isPositiveInt('20-34.5').false);
+    });
+
+    it('nonnumeric bound', function() {
+      expect(isPositiveInt('5-x').false);
+    });
+
+    it('nonrange argument', function() {
+      expect(isPositiveInt('17').false);
+    });
+
+    it('descending order', function() {
+      expect(isPositiveInt('7-3').false);
+    });
+
+  });
+
+});
+
+describe('mkFnCall', function() {
+
+  it('no argument', function() {
+    expect(mkFnCall('someFunction')).equal('select * from someFunction()');
+  });
+
+  it('1 argument', function() {
+    expect(mkFnCall('someFunction', 'someArg'))
+      .equal('select * from someFunction(\'someArg\')');
+  });
+
+  it('2 arguments', function() {
+    expect(mkFnCall('someFunction', 'thisArg', 17))
+      .equal('select * from someFunction(\'thisArg\', \'17\')');
+  });
+
+  it('blank arguments', function() {
+    expect(mkFnCall('someFunction', 'thisArg', 17, ''))
+      .equal('select * from someFunction(\'thisArg\', \'17\', \'\')');
+  });
+
+describe('formulateMessage', function() {
+
+  it('no replacement', function() {
+    const messages = {
+      'm0': 'This is message 0.',
+      'm1': 'Every «item» is in its own «item» list.'
+    };
+    expect(formulateMessage(messages, 'm0')).equal('This is message 0.');
+  });
+
+  it('vacuous replacement', function() {
+    const messages = {
+      'm0': 'This is message 0.',
+      'm1': 'Every «item» is in its own «item» list.'
+    };
+    expect(formulateMessage(messages, 'm0', '«thing»', 'car'))
+      .equal('This is message 0.');
+  });
+
+  it('operative replacement', function() {
+    const messages = {
+      'm0': 'This is message 0.',
+      'm1': 'Every «item» is in its own «item» list.'
+    };
+    expect(formulateMessage(messages, 'm1', '«item»', 'task'))
+      .equal('Every task is in its own task list.');
+  });
+
+});
 
 describe('task', function() {
+
+  before('factory reset before initial test', function() {
+    execSync('npm run dbdrop');
+    execSync('npm run dbinit');
+  });
 
   beforeEach('factory reset before each test', function() {
     execSync('node task reset');
   });
 
   after('factory reset after final test', function() {
-    execSync('node task reset');
+    execSync('npm run dbdrop');
+    execSync('npm run dbinit');
   });
 
   context('valid arguments', function() {
@@ -21,7 +148,7 @@ describe('task', function() {
     });
 
     it('second add command adds task 2', function() {
-      execSync('node task add \'test the add module once\'').toString();
+      execSync('node task add \'test the add module once\'');
       const response = execSync(
         'node task add \'test the add module again\''
       ).toString();
@@ -29,23 +156,22 @@ describe('task', function() {
     });
 
     it('done command on 1 task deletes it', function() {
-      execSync('node task add \'test done\'').toString();
-      execSync('node task add \'test done again\'').toString();
+      execSync('node task add \'test done\'');
+      execSync('node task add \'test done again\'');
       const response = execSync('node task done 2').toString();
-      expect(response).equal('Completed the task \'2: test done again\'.\n');
+      expect(response).equal('Completed the task \'2 test done again\'.\n');
     });
 
     it('list command gets answer in correct format', function() {
-      execSync('node task add \'test list\'').toString();
-      execSync('node task add \'test list again\'').toString();
+      execSync('node task add \'test list\'');
+      execSync('node task add \'test list again\'');
       const response = execSync('node task list').toString();
       expect(response).match(/^[^]+ID.+Description[^]+2 tasks\.\n$/);
     });
 
     it('reset command resets the list', function() {
-      execSync('node task add \'test reset\'').toString();
-      execSync('node task add \'test reset again\'').toString();
-      execSync('node task done 1-2').toString();
+      execSync('node task add \'test reset\'');
+      execSync('node task add \'test reset again\'');
       const response = execSync('node task reset').toString();
       expect(response).equal('The list is empty and the next ID is 1.\n');
     });
@@ -84,14 +210,6 @@ describe('task', function() {
       const response = execSync('node task done V').toString();
       expect(response).equal(
         'The command was unsuccessful because of a format error.\n'
-      );
-    });
-
-    it('reset command with tasks in existence', function() {
-      execSync('node task add \'test reset\'').toString();
-      const response = execSync('node task reset').toString();
-      expect(response).equal(
-        'Before a reset, you must report all tasks complete.\n'
       );
     });
 

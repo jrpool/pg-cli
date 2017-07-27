@@ -71,11 +71,11 @@ client0.connect().then(
     // Report this.
     console.log('Disconnected from postgres database');
     // Identify the statements to populate the tasks database.
-    fs.readFile('./sql/schema.sql', 'utf8', (err, data) => {
+    fs.readFile('./schema.sql', 'utf8', (err, data) => {
       // If the identification failed:
       if (err) {
         // Report this.
-        console.log('Error (./sql/schema.sql): ' + err.message);
+        console.log('Error (./schema.sql): ' + err.message);
       }
       // Otherwise, i.e. if the identification succeeded:
       else {

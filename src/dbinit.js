@@ -40,9 +40,9 @@ client0.connect().then(
 ).then(
   () => {
     console.log('Disconnected from postgres database');
-    fs.readFile('./sql/schema.sql', 'utf8', (err, data) => {
+    fs.readFile('./schema.sql', 'utf8', (err, data) => {
       if (err) {
-        console.log('Error (./sql/schema.sql): ' + err.message);
+        console.log('Error (./schema.sql): ' + err.message);
       }
       else {
         const client1 = new Client({

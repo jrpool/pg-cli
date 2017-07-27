@@ -14,19 +14,37 @@ const {isPositiveInt, isPositiveIntRange} = require('./src/validate');
 
 /// ///// GENERAL FUNCTIONS ///// ///
 
-/// Define a function that returns a database function invocation.
+/**
+  Define a function that returns a database function invocation.
+  Preconditions:
+    0. args has length 1 or more.
+    1. Each element of args is defined.
+    2. args[0] is a valid PostgreSQL identifier.
+*/
 const mkFnCall = args => {
   const fnArgs = args.slice(1).map(arg => "'" + arg + "'").join(', ');
   return 'select * from ' + args[0] + '(' + fnArgs + ')';
 };
 
-/// Define a function that acts on a message.
-const handleMessage = (messages, messageKey, symbol, replacement) => {
+/**
+  Define a function that formulates a message.
+  Preconditions:
+    0. messages is an object.
+    1. messageKey is one of the properties of messages.
+    2. symbol is a nonblank string without any RegExp metacharacters.
+    3. replacement is a string.
+*/
+const formulateMessage = (messages, messageKey, symbol, replacement) => {
   let message = messages[messageKey];
   if (symbol) {
     message = message.replace(RegExp(symbol, 'g'), replacement);
   }
-  console.log(message);
+  return message;
+};
+
+/// Define a function that acts on a message.
+const handleMessage = (messages, messageKey, symbol, replacement) => {
+  console.log(formulateMessage(messages, messageKey, symbol, replacement);
 };
 
 /**
@@ -69,9 +87,7 @@ const addHandler = (messages, result) => {
   );
 };
 
-/**
-  Define a handler for the result of the done command.
-*/
+/// Define a handler for the result of the done command.
 const doneHandler = (messages, result) => {
   const rows = result.rows;
   if (rows.length) {
@@ -147,3 +163,5 @@ if (args[0] !== undefined) {
 else {
   handleMessage(messages, 'commandFail');
 }
+
+exports.mkFnCall = mkFnCall;
