@@ -224,3 +224,4 @@ else {
 }
 
 exports.mkFnCall = mkFnCall;
+exports.formulateMessage = formulateMessage;

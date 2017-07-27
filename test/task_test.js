@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 const {execSync} = require('child_process');
-const {isPositiveInt, isPositiveIntRange} = require('./src/validate');
-const {mkFnCall} = require('./task.js');
+const {isPositiveInt, isPositiveIntRange} = require('../src/validate');
+const {mkFnCall, formulateMessage} = require('../task.js');
 
 describe('validate', function() {
 
