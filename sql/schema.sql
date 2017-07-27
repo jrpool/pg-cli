@@ -34,5 +34,5 @@ create function list(out identifier integer, out what text)
 create function reset(out newid integer)
   returns integer language sql as $$
     truncate tasks;
-    select cast(setval('tasks_id_seq', 0) as integer);
+    select cast(setval('tasks_id_seq', 1, false) as integer);
   $$;

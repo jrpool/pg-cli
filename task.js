@@ -30,8 +30,8 @@ const handleMessage = (messages, messageKey, symbol, replacement) => {
 };
 
 /**
-  Define a function that executes a function in the tasks database and
-  handles its result.
+  Define a function that connects to the tasks database, executes a function
+  in it, handles its result, and disconnects from the database.
 */
 const callFn = (messages, handler, fnName, ...fnArgs) => {
   const client = new Client({
@@ -56,6 +56,7 @@ const callFn = (messages, handler, fnName, ...fnArgs) => {
   ).catch(
     error => {
       console.log('Error (' + fnName + '): ' + error.message);
+      client.end();
     }
   );
 };
@@ -130,8 +131,8 @@ if (args[0] !== undefined) {
     if (isPositiveInt(args[1])) {
       callFn(messages, doneHandler, 'done', args[1]);
     }
-    else if (isPositiveIntRange(args[1])) {
-      callFn(messages, doneHandler, 'done', ...args[1].split('-'));
+    if (isPositiveIntRange(args[1])) {
+      callFn(messages, doneHandler, 'done', args[1].split('-'));
     }
     else {
       handleMessage(messages, 'commandFail');

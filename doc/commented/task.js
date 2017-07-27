@@ -39,8 +39,8 @@ const handleMessage = (messages, messageKey, symbol, replacement) => {
 };
 
 /**
-  Define a function that executes a function in the tasks database and
-  handles its result.
+  Define a function that connects to the tasks database, executes a function
+  in it, handles its result, and disconnects from the database.
 */
 const callFn = (messages, handler, fnName, ...fnArgs) => {
   // Create a client to connect to the tasks database.
@@ -80,6 +80,8 @@ const callFn = (messages, handler, fnName, ...fnArgs) => {
     error => {
       // Report it.
       console.log('Error (' + fnName + '): ' + error.message);
+      // Disconnect from the tasks database, if still connected.
+      client.end();
     }
   );
 };
