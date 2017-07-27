@@ -130,8 +130,8 @@ if (args[0] !== undefined) {
     if (isPositiveInt(args[1])) {
       callFn(messages, doneHandler, 'done', args[1]);
     }
-    if (isPositiveIntRange(args[1])) {
-      callFn(messages, doneHandler, 'done', args[1].split('-'));
+    else if (isPositiveIntRange(args[1])) {
+      callFn(messages, doneHandler, 'done', ...args[1].split('-'));
     }
     else {
       handleMessage(messages, 'commandFail');
