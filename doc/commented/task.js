@@ -66,7 +66,7 @@ const callFn = (messages, handler, fnName, ...fnArgs) => {
       // Handle the result of the function execution.
       handler(messages, result);
       // Disconnect from the tasks database.
-      return client.end()
+      return client.end();
     }
   // After the disconnection is complete:
   ).then(

@@ -47,7 +47,7 @@ const callFn = (messages, handler, fnName, ...fnArgs) => {
     result => {
       console.log(fnName + ' executed');
       handler(messages, result);
-      return client.end()
+      return client.end();
     }
   ).then(
     () => {
