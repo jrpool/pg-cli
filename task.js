@@ -44,7 +44,7 @@ const formulateMessage = (messages, messageKey, symbol, replacement) => {
 
 /// Define a function that acts on a message.
 const handleMessage = (messages, messageKey, symbol, replacement) => {
-  console.log(formulateMessage(messages, messageKey, symbol, replacement);
+  console.log(formulateMessage(messages, messageKey, symbol, replacement));
 };
 
 /**

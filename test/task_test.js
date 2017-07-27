@@ -32,39 +32,39 @@ describe('validate', function() {
   context('positive integer range', function() {
 
     it('valid range with distinct bounds', function() {
-      expect(isPositiveInt('34-45').true);
+      expect(isPositiveIntRange('34-45').true);
     });
 
     it('valid but alphabetically descending range', function() {
-      expect(isPositiveInt('4-15').true);
+      expect(isPositiveIntRange('4-15').true);
     });
 
     it('valid range with identical bounds', function() {
-      expect(isPositiveInt('34-34').true);
+      expect(isPositiveIntRange('34-34').true);
     });
 
     it('partly nonpositive range', function() {
-      expect(isPositiveInt('0-3').false);
+      expect(isPositiveIntRange('0-3').false);
     });
 
     it('partly negative range', function() {
-      expect(isPositiveInt('-6-3').false);
+      expect(isPositiveIntRange('-6-3').false);
     });
 
     it('noninteger bound', function() {
-      expect(isPositiveInt('20-34.5').false);
+      expect(isPositiveIntRange('20-34.5').false);
     });
 
     it('nonnumeric bound', function() {
-      expect(isPositiveInt('5-x').false);
+      expect(isPositiveIntRange('5-x').false);
     });
 
     it('nonrange argument', function() {
-      expect(isPositiveInt('17').false);
+      expect(isPositiveIntRange('17').false);
     });
 
     it('descending order', function() {
-      expect(isPositiveInt('7-3').false);
+      expect(isPositiveIntRange('7-3').false);
     });
 
   });
