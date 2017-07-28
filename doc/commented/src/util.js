@@ -20,7 +20,7 @@ const Table = require('cli-table2');
     1. Each element of args is defined.
     2. args[0] is a valid PostgreSQL identifier.
 */
-export const mkFnCall = args => {
+exports.mkFnCall = args => {
   // Identify the function arguments as a string, blank if none.
   const fnArgs = args.slice(1).map(arg => '\'' + arg + '\'').join(', ');
   // Return the query.
@@ -35,7 +35,7 @@ export const mkFnCall = args => {
     2. symbol is a nonblank string without any RegExp metacharacters.
     3. replacement is a string.
 */
-export const formulateMessage = (messages, messageKey, symbol, replacement) => {
+exports.formulateMessage = (messages, messageKey, symbol, replacement) => {
   // Initialize the message.
   let message = messages[messageKey];
   // If there is a symbol to replace in it:
@@ -48,16 +48,18 @@ export const formulateMessage = (messages, messageKey, symbol, replacement) => {
 };
 
 /// Define a function that acts on a message.
-export const handleMessage = (messages, messageKey, symbol, replacement) => {
+exports.handleMessage = (messages, messageKey, symbol, replacement) => {
   // Formulate and output the message.
-  console.log(formulateMessage(messages, messageKey, symbol, replacement));
+  console.log(
+    exports.formulateMessage(messages, messageKey, symbol, replacement)
+  );
 };
 
 /**
   Define a function that connects to the tasks database, executes a function
   in it, handles its result, and disconnects from the database.
 */
-export const callFn = (messages, handler, fnName, ...fnArgs) => {
+exports.callFn = (messages, handler, fnName, ...fnArgs) => {
   // Create a client to connect to the tasks database.
   const client = new Client({
     user: 'taskmaster',
@@ -68,7 +70,7 @@ export const callFn = (messages, handler, fnName, ...fnArgs) => {
     // If it succeeded:
     () => {
       // Execute the specified function and return its result.
-      return client.query(mkFnCall([fnName, ...fnArgs]));
+      return client.query(exports.mkFnCall([fnName, ...fnArgs]));
     }
   // After the execution is complete:
   ).then(
@@ -94,19 +96,19 @@ export const callFn = (messages, handler, fnName, ...fnArgs) => {
 /// ///// COMMAND-SPECIFIC HANDLERS ///// ///
 
 /// Define a handler for the result of the help command.
-export const helpHandler = messages => {
-  handleMessage(messages, 'helpTip');
+exports.helpHandler = messages => {
+  exports.handleMessage(messages, 'helpTip');
 };
 
 /// Define a handler for the result of the add command.
-export const addHandler = (messages, result) => {
-  handleMessage(
+exports.addHandler = (messages, result) => {
+  exports.handleMessage(
     messages, 'addReport', '«addResult»', result.rows[0].identifier
   );
 };
 
 /// Define a handler for the result of the done command.
-export const doneHandler = (messages, result) => {
+exports.doneHandler = (messages, result) => {
   // Identify an array of the row objects in the result.
   const rows = result.rows;
   // If any tasks were removed:
@@ -114,7 +116,7 @@ export const doneHandler = (messages, result) => {
     // For each of them:
     for (const row of rows) {
       // Handle its values.
-      handleMessage(
+      exports.handleMessage(
         messages, 'doneReport', '«idAndDoneResult»',
         row.identifier + ' ' + row.what
       );
@@ -123,12 +125,12 @@ export const doneHandler = (messages, result) => {
   // Otherwise, i.e. if no task was removed:
   else {
     // Report this.
-    handleMessage(messages, 'doneMissingFail');
+    exports.handleMessage(messages, 'doneMissingFail');
   }
 };
 
 /// Define a handler for the result of the list command.
-export const listHandler = (messages, result) => {
+exports.listHandler = (messages, result) => {
   // Create a table with column headers for list items.
   const table = new Table({
     head: [messages.listCol0Head, messages.listCol1Head]
@@ -151,10 +153,10 @@ export const listHandler = (messages, result) => {
   */
   const listMessages = {'table': [table.toString(), footer].join('\n')};
   // Handle the table and its footer template as a message.
-  handleMessage(listMessages, 'table', '«rows.length»', rows.length);
+  exports.handleMessage(listMessages, 'table', '«rows.length»', rows.length);
 };
 
 /// Define a handler for the result of the reset command.
-export const resetHandler = (messages) => {
-  handleMessage(messages, 'resetReport');
+exports.resetHandler = (messages) => {
+  exports.handleMessage(messages, 'resetReport');
 };

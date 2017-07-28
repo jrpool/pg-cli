@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+const {expect} = require('chai');
 const {execSync} = require('child_process');
 const {isPositiveInt, isPositiveIntRange} = require('../src/validate');
 const {mkFnCall, formulateMessage} = require('../src/util.js');
