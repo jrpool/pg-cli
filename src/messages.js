@@ -1,4 +1,4 @@
-/// Task-list messages in English.
+/// Messages in English.
 exports.messages = {
   'addReport': 'Created task «addResult».',
   'doneMissingFail':
