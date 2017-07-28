@@ -20,9 +20,9 @@ const Table = require('cli-table2');
     1. Each element of args is defined.
     2. args[0] is a valid PostgreSQL identifier.
 */
-exports.mkFnCall = args => {
+export const mkFnCall = args => {
   // Identify the function arguments as a string, blank if none.
-  const fnArgs = args.slice(1).map(arg => "'" + arg + "'").join(', ');
+  const fnArgs = args.slice(1).map(arg => '\'' + arg + '\'').join(', ');
   // Return the query.
   return 'select * from ' + args[0] + '(' + fnArgs + ')';
 };
@@ -35,7 +35,7 @@ exports.mkFnCall = args => {
     2. symbol is a nonblank string without any RegExp metacharacters.
     3. replacement is a string.
 */
-exports.formulateMessage = (messages, messageKey, symbol, replacement) => {
+export const formulateMessage = (messages, messageKey, symbol, replacement) => {
   // Initialize the message.
   let message = messages[messageKey];
   // If there is a symbol to replace in it:
@@ -48,7 +48,7 @@ exports.formulateMessage = (messages, messageKey, symbol, replacement) => {
 };
 
 /// Define a function that acts on a message.
-exports.handleMessage = (messages, messageKey, symbol, replacement) => {
+export const handleMessage = (messages, messageKey, symbol, replacement) => {
   // Formulate and output the message.
   console.log(formulateMessage(messages, messageKey, symbol, replacement));
 };
@@ -57,7 +57,7 @@ exports.handleMessage = (messages, messageKey, symbol, replacement) => {
   Define a function that connects to the tasks database, executes a function
   in it, handles its result, and disconnects from the database.
 */
-exports.callFn = (messages, handler, fnName, ...fnArgs) => {
+export const callFn = (messages, handler, fnName, ...fnArgs) => {
   // Create a client to connect to the tasks database.
   const client = new Client({
     user: 'taskmaster',
@@ -94,19 +94,19 @@ exports.callFn = (messages, handler, fnName, ...fnArgs) => {
 /// ///// COMMAND-SPECIFIC HANDLERS ///// ///
 
 /// Define a handler for the result of the help command.
-exports.helpHandler = messages => {
+export const helpHandler = messages => {
   handleMessage(messages, 'helpTip');
 };
 
 /// Define a handler for the result of the add command.
-exports.addHandler = (messages, result) => {
+export const addHandler = (messages, result) => {
   handleMessage(
     messages, 'addReport', '«addResult»', result.rows[0].identifier
   );
 };
 
 /// Define a handler for the result of the done command.
-exports.doneHandler = (messages, result) => {
+export const doneHandler = (messages, result) => {
   // Identify an array of the row objects in the result.
   const rows = result.rows;
   // If any tasks were removed:
@@ -128,7 +128,7 @@ exports.doneHandler = (messages, result) => {
 };
 
 /// Define a handler for the result of the list command.
-exports.listHandler = (messages, result) => {
+export const listHandler = (messages, result) => {
   // Create a table with column headers for list items.
   const table = new Table({
     head: [messages.listCol0Head, messages.listCol1Head]
@@ -155,6 +155,6 @@ exports.listHandler = (messages, result) => {
 };
 
 /// Define a handler for the result of the reset command.
-exports.resetHandler = (messages) => {
+export const resetHandler = (messages) => {
   handleMessage(messages, 'resetReport');
 };
