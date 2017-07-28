@@ -36,7 +36,7 @@ if (args[0] !== undefined) {
       util.callFn(messages, util.doneHandler, 'done', args[1]);
     }
     // Otherwise, if the argument is a positive integer range:
-    else if (isPositiveIntRange(args[1])) {
+    else if (validate.isPositiveIntRange(args[1])) {
       // Perform the command.
       util.callFn(messages, util.doneHandler, 'done', ...args[1].split('-'));
     }

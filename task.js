@@ -23,7 +23,7 @@ if (args[0] !== undefined) {
     if (validate.isPositiveInt(args[1])) {
       util.callFn(messages, util.doneHandler, 'done', args[1]);
     }
-    else if (isPositiveIntRange(args[1])) {
+    else if (validate.isPositiveIntRange(args[1])) {
       util.callFn(messages, util.doneHandler, 'done', ...args[1].split('-'));
     }
     else {
