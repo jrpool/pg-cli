@@ -8,7 +8,10 @@
 const {isPositiveInt, isPositiveIntRange} = require('./src/validate');
 
 // Import the utility functions from the util module.
-const {helpHandler, callFn, handleMessage} = require('./src/util');
+const {
+  helpHandler, callFn, handleMessage, addHandler, doneHandler, listHandler,
+  resetHandler
+} = require('./src/util');
 
 // Identify the command-line arguments.
 const args = process.argv.slice(2);

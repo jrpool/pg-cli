@@ -6,7 +6,10 @@
 
 const {isPositiveInt, isPositiveIntRange} = require('./src/validate');
 
-const {helpHandler, callFn, handleMessage} = require('./src/util');
+const {
+  helpHandler, callFn, handleMessage, addHandler, doneHandler, listHandler,
+  resetHandler
+} = require('./src/util');
 
 const args = process.argv.slice(2);
 
