@@ -12,6 +12,12 @@ const {messages} = module.require('./src/messages');
 
 const args = process.argv.slice(2);
 
+
+//this top level wrapper if statement could be handled in an else at the bottom of the chain of if/else statements
+//and does not need to encapsulate the rest of the code. Let all the inital clases handle non-erroroneous instances,
+//then use the final else to handle undefined, null, or unsupported arguments. The fact that I see the same line
+//repeated on lines 35, 45, & 49 is a red flag for me that this could be refactored to be cleaner.
+//consider making each function more concise and use a switch statement.
 if (args[0] !== undefined) {
   if (args[0] === 'help' && args.length === 1) {
     util.helpHandler(messages);

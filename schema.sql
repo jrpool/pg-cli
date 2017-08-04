@@ -1,3 +1,11 @@
+/* (add this --> line) DROP TABLE IF EXISTS tasks; */
+/* Use this syntax below */
+-- CREATE TABLE tasks (
+--   id SERIAL PRIMARY KEY,
+--   description TEXT NOT NULL
+-- );
+
+
 create table tasks (
   id serial primary key,
   description text not null
