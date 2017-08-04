@@ -125,7 +125,7 @@ describe('formulateMessage', function() {
 });
 
 describe('task', function() {
-
+//A lot of these tests did not pass for me... I am not sure why
   before('factory reset before initial test', function() {
     execSync('npm run dbdrop');
     execSync('npm run dbinit');
